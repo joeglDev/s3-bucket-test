@@ -1,12 +1,12 @@
 // Import required AWS SDK clients and commands for Node.js.
 import { PutObjectCommand, CreateBucketCommand } from "@aws-sdk/client-s3";
-import { s3Client } from "../../libs/sampleClient";
+import { s3Client } from "./sampleClient";
 
 // Set the parameters
 const params = {
     Bucket: "jg-character-portfolio", // The name of the bucket. For example, 'sample_bucket_101'.
     Key: "test-image.png", // The name of the object. For example, 'sample_upload.txt'.
-    Body: require('../../public/test-image.png'), // The content of the object. For example, 'Hello world!".
+    Body: require('./test-image.png'), // The content of the object. For example, 'Hello world!".
   };
 
 
