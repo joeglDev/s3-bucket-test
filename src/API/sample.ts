@@ -1,8 +1,7 @@
 // Import required AWS SDK clients and commands for Node.js.
-import { PutObjectCommand, CreateBucketCommand } from "@aws-sdk/client-s3";
-import { client, s3Client } from "./sampleClient";
-// this imports an aggregated version of S3 that exposes the .send operation
-import { S3 } from "@aws-sdk/client-s3";
+import { PutObjectCommand, CreateBucketCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { s3Client } from "./sampleClient";
+
 // this imports just the getObject operation from S3
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 
@@ -75,7 +74,7 @@ const getObject = async () => {
   };
   try {
 
-    const getObjectResult = await client.getObject(getParams);
+    const getObjectResult = await s3Client.send(new GetObjectCommand(getParams));
 
     // env-specific stream with added mixin methods.
     const bodyStream = getObjectResult.Body;
@@ -92,4 +91,25 @@ const getObject = async () => {
   }
 };
 
-export { createBucket, uploadObject, getObject };
+
+/**
+ * Deletes the test s3 object from the s3 bucket.
+ * 
+ * @returns {any} object data
+ */
+const deleteObject =  async () => {
+  //params
+  const deleteParams = {
+    Bucket: "jg-character-portfolio",
+    Key: "test-object-1",
+  };
+  try {
+    const data = await s3Client.send(new DeleteObjectCommand(deleteParams));
+    console.log("Success. Object deleted.", data);
+    return data; // For unit tests.
+  } catch (err) {
+    console.log("Error", err);
+  }
+};
+
+export { createBucket, uploadObject, getObject, deleteObject };
