@@ -1,12 +1,20 @@
 // Import required AWS SDK clients and commands for Node.js.
 import { PutObjectCommand, CreateBucketCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "./sampleClient";
+import { GetObjectCommand } from "@aws-sdk/client-s3";
+
+
 
 // Set the parameters
 const params = {
     Bucket: "jg-character-portfolio", // The name of the bucket. For example, 'sample_bucket_101'.
-    Key: "test-image.png", // The name of the object. For example, 'sample_upload.txt'.
-    Body: require('./test-image.png'), // The content of the object. For example, 'Hello world!".
+    Key: "test-object-1", // The name of the object. For example, 'sample_upload.txt'.
+    Body:  "This is the test object 1."// The content of the object. For example, 'Hello world!".
+  };
+
+  const getParams = {
+    Bucket: "jg-character-portfolio",
+    Key: "test-image.png",
   };
 
 
@@ -17,6 +25,7 @@ const params = {
    * @returns {any} data object
    */
   const createBucket = async () => {
+  
     try {
         const data = await s3Client.send(
             new CreateBucketCommand({ Bucket: params.Bucket })
@@ -29,11 +38,20 @@ const params = {
       }
   }
 
+
+
   /**
+   *  Upload a text object to the s3 bucket.
    * 
-   * @returns 
+   * @returns {any} - $metadata object
    */
   const uploadObject = async () => {
+    //params
+    const params = {
+      Bucket: "jg-character-portfolio", // The name of the bucket. For example, 'sample_bucket_101'.
+      Key: "test-object-1", // The name of the object. For example, 'sample_upload.txt'.
+      Body:  "This is the test object 1."// The content of the object. For example, 'Hello world!".
+    };
     // Create an object and upload it to the Amazon S3 bucket.
   try {
     const results = await s3Client.send(new PutObjectCommand(params));
@@ -45,11 +63,31 @@ const params = {
         "/" +
         params.Key
     );
+    console.log(results)
     return results; // For unit tests.
+    
   } catch (err) {
     console.log("Error", err);
   }
+  
   }
 
+  const getObject = async () => {
+    //params
+    const getParams = {
+      Bucket: "jg-character-portfolio",
+      Key: "test-object-1",
+    };
+    try {
+        // Get the object} from the Amazon S3 bucket. It is returned as a ReadableStream.
+        const data = await s3Client.send(new GetObjectCommand(getParams));
+        // Convert the ReadableStream to a string.
+        console.log("GOT:", data)
+      } catch (err) {
+        console.log("Error", err);
+      }
+  };
 
-  export {createBucket, uploadObject};
+  
+
+  export {createBucket, uploadObject, getObject};
